@@ -4,6 +4,7 @@ import { useAppDispatch } from '../hooks/useAppDispatch';
 import { returnBook } from '../features/books/booksSlice';
 import { removeBorrow } from '../features/borrow/borrowSlice';
 import BookCard from './BookCard/BookCard';
+import { WarningIcon } from './Icons';
 import type { Book } from '../types';
 
 const BorrowedSection: React.FC = () => {
@@ -22,23 +23,35 @@ const BorrowedSection: React.FC = () => {
     [dispatch]
   );
 
-  // Dummy callback vì sách đang mượn hiển thị nút Trả
+  // Dummy callback cho prop onBorrow vì sách mượn hiển thị nút Trả
   const handleBorrow = useCallback((_id: string) => {}, []);
 
   if (borrowedBooks.length === 0 && !limitWarning) return null;
 
   return (
-    <section className="borrowed-section">
+    <section className="borrowed-section" aria-labelledby="borrowed-heading">
       <div className="borrowed-section__header">
-        <h2 className="section-title">
-          📋 Sách đang mượn
-          <span className="borrow-count">{borrowedBooks.length}/3</span>
-        </h2>
+        <div className="borrowed-title-group">
+          <h2 id="borrowed-heading" className="section-title">
+            Sách đang mượn
+          </h2>
+          <span className="borrow-badge" title="Số lượng sách bạn đang mượn">
+            {borrowedBooks.length} / 3 cuốn
+          </span>
+        </div>
+        <p className="borrowed-subtitle">
+          Theo dõi và quản lý những cuốn sách bạn đã đăng ký mượn tại thư viện
+        </p>
       </div>
 
       {limitWarning && (
         <div className="alert alert--warning" role="alert">
-          ⚠️ Bạn đã mượn tối đa <strong>3 cuốn</strong>! Hãy trả sách trước khi mượn thêm.
+          <span className="alert__icon">
+            <WarningIcon size={18} />
+          </span>
+          <div className="alert__content">
+            <strong>Đã đạt giới hạn mượn:</strong> Mỗi sinh viên chỉ được mượn tối đa 3 cuốn cùng lúc. Vui lòng trả bớt sách trước khi mượn thêm cuốn mới.
+          </div>
         </div>
       )}
 

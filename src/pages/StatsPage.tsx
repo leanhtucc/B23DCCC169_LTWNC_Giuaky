@@ -1,19 +1,14 @@
 import React, { useMemo } from 'react';
 import { useAppSelector } from '../hooks/useAppSelector';
 import type { BookCategory, ReadonlyRecord, Book } from '../types';
+import { BookIcon, BorrowIcon, CheckIcon, CodeIcon, ChartIcon, GlobeIcon } from '../components/Icons';
 
 const CATEGORIES: BookCategory[] = ['CNTT', 'Kinh tế', 'Ngoại ngữ'];
 
-const categoryIcons: ReadonlyRecord<BookCategory, string> = {
-  CNTT: '💻',
-  'Kinh tế': '💰',
-  'Ngoại ngữ': '🌏',
-};
-
-const categoryColors: ReadonlyRecord<BookCategory, string> = {
-  CNTT: '#3b82f6',
-  'Kinh tế': '#10b981',
-  'Ngoại ngữ': '#8b5cf6',
+const categoryIcons: ReadonlyRecord<BookCategory, React.ReactNode> = {
+  CNTT: <CodeIcon size={16} />,
+  'Kinh tế': <ChartIcon size={16} />,
+  'Ngoại ngữ': <GlobeIcon size={16} />,
 };
 
 interface CategoryStat {
@@ -27,7 +22,6 @@ const StatsPage: React.FC = () => {
   const books: Book[] = useAppSelector((s) => s.books.items);
   const borrowedIds: string[] = useAppSelector((s) => s.borrow.borrowedIds);
 
-  // useMemo: tính thống kê theo thể loại
   const statsByCategory = useMemo<CategoryStat[]>(() => {
     return CATEGORIES.map((cat: BookCategory) => {
       const catBooks = books.filter((b: Book) => b.category === cat);
@@ -38,87 +32,114 @@ const StatsPage: React.FC = () => {
     });
   }, [books]);
 
-  const totalBooks = books.length;
+  const totalTitles = books.length;
+  const totalCopies = books.reduce((sum, b) => sum + b.total, 0);
+  const totalAvailable = books.reduce((sum, b) => sum + b.available, 0);
   const totalBorrowed = borrowedIds.length;
 
   return (
     <main className="stats-page">
-      <div className="hero">
-        <h1 className="hero__title">📊 Thống kê thư viện</h1>
-        <p className="hero__subtitle">Tổng quan về tình trạng sách trong thư viện</p>
-      </div>
-
-      {/* Tổng quan */}
-      <div className="stats-overview">
-        <div className="stat-card stat-card--total">
-          <span className="stat-card__icon">📚</span>
-          <div>
-            <p className="stat-card__label">Tổng đầu sách</p>
-            <p className="stat-card__value">{totalBooks}</p>
-          </div>
-        </div>
-        <div className="stat-card stat-card--borrowed">
-          <span className="stat-card__icon">📋</span>
-          <div>
-            <p className="stat-card__label">Đang mượn</p>
-            <p className="stat-card__value">{totalBorrowed}</p>
-          </div>
-        </div>
-        <div className="stat-card stat-card--available">
-          <span className="stat-card__icon">✅</span>
-          <div>
-            <p className="stat-card__label">Có thể mượn</p>
-            <p className="stat-card__value">
-              {books.filter((b: Book) => b.available > 0).length}
+      <header className="page-header">
+        <div className="page-header__main">
+          <div className="page-header__content">
+            <h1 className="page-title">Báo cáo & Thống kê Thư viện</h1>
+            <p className="page-description">
+              Tổng quan tình hình phân bổ tài liệu, tỷ lệ sẵn sàng và dữ liệu mượn sách theo từng thể loại chuyên ngành.
             </p>
           </div>
         </div>
-      </div>
+      </header>
 
-      {/* Thống kê theo thể loại */}
-      <section className="stats-by-category">
-        <h2 className="section-title">Theo thể loại</h2>
-        <div className="category-stats-grid">
-          {statsByCategory.map(({ category, totalTitles, totalCopies, availableCopies }) => {
-            const percent =
-              totalCopies > 0 ? Math.round((availableCopies / totalCopies) * 100) : 0;
-            return (
-              <div className="category-stat-card" key={category}>
-                <div className="category-stat-card__header">
-                  <span className="category-stat-card__icon">{categoryIcons[category]}</span>
-                  <h3 className="category-stat-card__name">{category}</h3>
-                </div>
-                <div className="category-stat-card__info">
-                  <div className="stat-row">
-                    <span>Đầu sách</span>
-                    <strong>{totalTitles}</strong>
+      <div className="page-body">
+        {/* KPI Overview Metrics */}
+        <section className="metrics-grid" aria-label="Chỉ số tổng quan">
+          <div className="metric-card">
+            <div className="metric-card__header">
+              <span className="metric-card__label">Tổng số đầu sách</span>
+              <span className="metric-card__icon" aria-hidden="true">
+                <BookIcon size={18} />
+              </span>
+            </div>
+            <div className="metric-card__value">{totalTitles}</div>
+            <div className="metric-card__hint">Quy mô toàn thư viện ({totalCopies} bản in)</div>
+          </div>
+
+          <div className="metric-card">
+            <div className="metric-card__header">
+              <span className="metric-card__label">Đang được mượn</span>
+              <span className="metric-card__icon metric-card__icon--warning" aria-hidden="true">
+                <BorrowIcon size={18} />
+              </span>
+            </div>
+            <div className="metric-card__value metric-card__value--warning">{totalBorrowed}</div>
+            <div className="metric-card__hint">Đang do sinh viên lưu giữ</div>
+          </div>
+
+          <div className="metric-card">
+            <div className="metric-card__header">
+              <span className="metric-card__label">Bản in sẵn sàng</span>
+              <span className="metric-card__icon metric-card__icon--success" aria-hidden="true">
+                <CheckIcon size={18} />
+              </span>
+            </div>
+            <div className="metric-card__value metric-card__value--success">{totalAvailable}</div>
+            <div className="metric-card__hint">Có thể mượn ngay trên giá sách</div>
+          </div>
+        </section>
+
+        {/* Breakdown by Category */}
+        <section className="breakdown-section" aria-labelledby="breakdown-heading">
+          <div className="section-header">
+            <h2 id="breakdown-heading" className="section-title">
+              Phân bổ theo chuyên ngành
+            </h2>
+            <p className="section-subtitle">
+              Chi tiết số đầu sách, tổng lượng bản in và tỷ lệ bản in còn tại thư viện
+            </p>
+          </div>
+
+          <div className="category-grid">
+            {statsByCategory.map(({ category, totalTitles, totalCopies, availableCopies }) => {
+              const availabilityPercent =
+                totalCopies > 0 ? Math.round((availableCopies / totalCopies) * 100) : 0;
+
+              return (
+                <article className="category-card" key={category}>
+                  <div className="category-card__header">
+                    <span className="category-card__tag">
+                      <span className="category-card__icon">{categoryIcons[category]}</span>
+                      <span className="category-card__name">{category}</span>
+                    </span>
+                    <span className="category-card__rate">{availabilityPercent}% khả dụng</span>
                   </div>
-                  <div className="stat-row">
-                    <span>Tổng bản</span>
-                    <strong>{totalCopies}</strong>
+
+                  <dl className="category-card__data">
+                    <div className="data-row">
+                      <dt>Số đầu sách:</dt>
+                      <dd>{totalTitles} tác phẩm</dd>
+                    </div>
+                    <div className="data-row">
+                      <dt>Tổng số bản:</dt>
+                      <dd>{totalCopies} bản</dd>
+                    </div>
+                    <div className="data-row">
+                      <dt>Còn trên kệ:</dt>
+                      <dd className="highlight-text">{availableCopies} bản</dd>
+                    </div>
+                  </dl>
+
+                  <div className="progress-container" aria-hidden="true">
+                    <div
+                      className="progress-bar"
+                      style={{ width: `${availabilityPercent}%` }}
+                    />
                   </div>
-                  <div className="stat-row">
-                    <span>Còn sẵn</span>
-                    <strong>{availableCopies}</strong>
-                  </div>
-                </div>
-                {/* Thanh biểu đồ CSS */}
-                <div className="chart-bar-wrapper">
-                  <div
-                    className="chart-bar"
-                    style={{
-                      width: `${percent}%`,
-                      backgroundColor: categoryColors[category],
-                    }}
-                    title={`${percent}% còn sẵn`}
-                  />
-                  <span className="chart-bar__label">{percent}% còn sẵn</span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </section>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+      </div>
     </main>
   );
 };

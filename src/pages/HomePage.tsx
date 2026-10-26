@@ -7,6 +7,7 @@ import CategoryFilter from '../components/CategoryFilter';
 import BookList from '../components/BookList';
 import BorrowedSection from '../components/BorrowedSection';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { RefreshIcon, WarningIcon } from '../components/Icons';
 
 const HomePage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -21,66 +22,83 @@ const HomePage: React.FC = () => {
 
   return (
     <main className="home-page">
-      <div className="hero">
-        <h1 className="hero__title">Thư viện chuyên ngành 📚</h1>
-        <p className="hero__subtitle">
-          Tra cứu, theo dõi và quản lý mượn/trả sách trực tuyến nhanh chóng
-        </p>
+      <header className="page-header">
+        <div className="page-header__main">
+          <div className="page-header__content">
+            <h1 className="page-title">Tra cứu & Mượn sách</h1>
+            <p className="page-description">
+              Hệ thống thư viện khoa điện tử. Tìm kiếm đầu sách chuyên ngành, tra cứu số lượng bản còn sẵn và quản lý mượn trả tiện lợi.
+            </p>
+          </div>
 
-        {/* Nút giả lập kiểm thử API cho giảng viên / chấm bài */}
-        <div className="hero__test-buttons">
-          <button
-            className="btn btn--subtle"
-            onClick={() => dispatch(loadBooks(false))}
-            disabled={status === 'loading'}
-            title="Tải lại danh sách từ API giả lập (500ms)"
-          >
-            🔄 Tải lại dữ liệu
-          </button>
-          <button
-            className="btn btn--subtle-danger"
-            onClick={() => dispatch(loadBooks(true))}
-            disabled={status === 'loading'}
-            title="Giả lập API thất bại để kiểm tra thông báo lỗi"
-          >
-            🧪 Thử API lỗi
-          </button>
-        </div>
-      </div>
-
-      <div className="controls">
-        <SearchBar />
-        <CategoryFilter />
-      </div>
-
-      {status === 'loading' && <LoadingSpinner />}
-
-      {status === 'failed' && (
-        <div className="error-container">
-          <div className="alert alert--error" role="alert">
-            <span className="error-icon">⚠️</span>
-            <div className="error-content">
-              <strong>Lỗi tải dữ liệu:</strong> {error}
-            </div>
+          <div className="page-header__actions">
             <button
-              className="btn btn--retry"
+              type="button"
+              className="btn btn--secondary btn--sm"
               onClick={() => dispatch(loadBooks(false))}
+              disabled={status === 'loading'}
+              title="Tải lại danh sách từ API giả lập (độ trễ 500ms)"
             >
-              🔄 Thử lại
+              <RefreshIcon size={14} />
+              <span>Tải lại</span>
+            </button>
+            <button
+              type="button"
+              className="btn btn--ghost-danger btn--sm"
+              onClick={() => dispatch(loadBooks(true))}
+              disabled={status === 'loading'}
+              title="Giả lập lỗi kết nối API"
+            >
+              <WarningIcon size={14} />
+              <span>Thử API lỗi</span>
             </button>
           </div>
         </div>
-      )}
+      </header>
 
-      {status === 'succeeded' && (
-        <>
-          <BorrowedSection />
-          <section className="books-section">
-            <h2 className="section-title">📖 Danh mục sách</h2>
-            <BookList />
-          </section>
-        </>
-      )}
+      <section className="catalog-toolbar" aria-label="Bộ lọc tìm kiếm">
+        <div className="toolbar-container">
+          <SearchBar />
+          <CategoryFilter />
+        </div>
+      </section>
+
+      <div className="page-body">
+        {status === 'loading' && <LoadingSpinner />}
+
+        {status === 'failed' && (
+          <div className="alert alert--error" role="alert">
+            <span className="alert__icon">
+              <WarningIcon size={18} />
+            </span>
+            <div className="alert__content">
+              <strong>Không thể tải danh sách sách:</strong> {error}
+            </div>
+            <button
+              type="button"
+              className="btn btn--secondary btn--sm"
+              onClick={() => dispatch(loadBooks(false))}
+            >
+              <RefreshIcon size={14} />
+              <span>Thử lại</span>
+            </button>
+          </div>
+        )}
+
+        {status === 'succeeded' && (
+          <>
+            <BorrowedSection />
+            <section className="books-section" aria-labelledby="catalog-heading">
+              <div className="section-header">
+                <h2 id="catalog-heading" className="section-title">
+                  Danh mục sách
+                </h2>
+              </div>
+              <BookList />
+            </section>
+          </>
+        )}
+      </div>
     </main>
   );
 };

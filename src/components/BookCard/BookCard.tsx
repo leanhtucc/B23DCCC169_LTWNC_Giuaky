@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import type { Book } from '../../types';
+import { BorrowIcon, ReturnIcon } from '../Icons';
 
 interface BookCardProps {
   book: Book;
@@ -10,7 +11,7 @@ interface BookCardProps {
 
 const categoryColors: Record<string, string> = {
   CNTT: 'badge-cntt',
-  'Kinh tế': 'badge-kinhtế',
+  'Kinh tế': 'badge-kinhte',
   'Ngoại ngữ': 'badge-ngoaingu',
 };
 
@@ -27,50 +28,70 @@ const BookCard: React.FC<BookCardProps> = ({ book, isBorrowed, onBorrow, onRetur
   const availablePercent = Math.round((book.available / book.total) * 100);
 
   return (
-    <div className={`book-card ${isBorrowed ? 'book-card--borrowed' : ''}`}>
-      <div className="book-card__header">
+    <article className={`book-card ${isBorrowed ? 'book-card--borrowed' : ''}`}>
+      <div className="book-card__meta">
         <span className={`badge ${categoryColors[book.category] ?? 'badge-default'}`}>
           {book.category}
         </span>
         <span className="book-card__year">{book.year}</span>
       </div>
 
-      <h3 className="book-card__title" title={book.title}>
-        {book.title}
-      </h3>
-      <p className="book-card__author">✍️ {book.author}</p>
+      <div className="book-card__body">
+        <h3 className="book-card__title" title={book.title}>
+          {book.title}
+        </h3>
+        <p className="book-card__author">
+          <span className="book-card__author-label">Tác giả:</span> {book.author}
+        </p>
+      </div>
 
-      <div className="book-card__availability">
-        <div className="availability-bar">
-          <div
-            className="availability-bar__fill"
-            style={{ width: `${availablePercent}%` }}
-            aria-valuenow={book.available}
-            aria-valuemax={book.total}
-          />
+      <div className="book-card__footer">
+        <div className="book-card__stock">
+          <div className="stock-info">
+            <span className="stock-label">Tình trạng:</span>
+            <span
+              className={`stock-status ${
+                book.available === 0 ? 'stock-status--empty' : 'stock-status--available'
+              }`}
+            >
+              {book.available === 0 ? 'Hết bản' : `Còn ${book.available}/${book.total} bản`}
+            </span>
+          </div>
+          <div className="stock-bar" aria-hidden="true">
+            <div
+              className={`stock-bar__fill ${book.available === 0 ? 'stock-bar__fill--empty' : ''}`}
+              style={{ width: `${availablePercent}%` }}
+            />
+          </div>
         </div>
-        <span className={`availability-text ${book.available === 0 ? 'availability-text--empty' : ''}`}>
-          {book.available === 0 ? 'Hết bản' : `Còn ${book.available}/${book.total} bản`}
-        </span>
-      </div>
 
-      <div className="book-card__actions">
-        {isBorrowed ? (
-          <button className="btn btn--return" onClick={handleReturn}>
-            📤 Trả sách
-          </button>
-        ) : (
-          <button
-            className="btn btn--borrow"
-            onClick={handleBorrow}
-            disabled={isDisabled}
-            aria-disabled={isDisabled}
-          >
-            {isDisabled ? '🚫 Hết bản' : '📥 Mượn sách'}
-          </button>
-        )}
+        <div className="book-card__actions">
+          {isBorrowed ? (
+            <button
+              type="button"
+              className="btn btn--return"
+              onClick={handleReturn}
+              aria-label={`Trả sách ${book.title}`}
+            >
+              <ReturnIcon size={15} />
+              <span>Trả sách</span>
+            </button>
+          ) : (
+            <button
+              type="button"
+              className={`btn ${isDisabled ? 'btn--disabled' : 'btn--borrow'}`}
+              onClick={handleBorrow}
+              disabled={isDisabled}
+              aria-disabled={isDisabled}
+              aria-label={isDisabled ? `Hết bản cuốn ${book.title}` : `Mượn sách ${book.title}`}
+            >
+              {!isDisabled && <BorrowIcon size={15} />}
+              <span>{isDisabled ? 'Hết bản' : 'Mượn sách'}</span>
+            </button>
+          )}
+        </div>
       </div>
-    </div>
+    </article>
   );
 };
 
