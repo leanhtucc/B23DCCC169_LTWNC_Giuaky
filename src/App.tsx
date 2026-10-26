@@ -4,7 +4,6 @@ import { Provider } from 'react-redux';
 import { store } from './app/store';
 import { ThemeProvider } from './context/ThemeContext';
 import Navbar from './components/Navbar';
-import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
 import LoadingSpinner from './components/LoadingSpinner';
 
@@ -31,7 +30,6 @@ const App: React.FC = () => {
                 />
               </Routes>
             </div>
-            <Footer />
           </div>
         </BrowserRouter>
       </ThemeProvider>

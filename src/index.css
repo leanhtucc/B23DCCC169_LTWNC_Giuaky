@@ -1835,7 +1835,7 @@ html, body {
 }
 
 /* ==========================================================================
-   App Shell & Academic College Footer
+   App Shell Layout
    ========================================================================== */
 
 .app-shell {
@@ -1846,118 +1846,4 @@ html, body {
 
 .page-content {
   flex: 1;
-}
-
-.app-footer {
-  margin-top: auto;
-  background-color: var(--bg-surface);
-  border-top: 1px solid var(--border-subtle);
-  padding: 2.5rem 1.5rem 2rem;
-  transition: background-color var(--duration-normal) ease, border-color var(--duration-normal) ease;
-}
-
-.footer-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 1.75rem;
-}
-
-.footer-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 2rem;
-  flex-wrap: wrap;
-}
-
-.footer-brand {
-  max-width: 480px;
-}
-
-.footer-brand-title {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 0.4rem;
-}
-
-.footer-brand-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 26px;
-  height: 26px;
-  border-radius: var(--radius-sm);
-  background-color: var(--primary);
-  color: #ffffff;
-}
-
-.footer-desc {
-  font-size: 0.825rem;
-  color: var(--text-secondary);
-  line-height: 1.6;
-}
-
-.footer-rules {
-  background-color: var(--bg-surface-subtle);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-sm);
-  padding: 0.85rem 1.25rem;
-  min-width: 260px;
-}
-
-.footer-rules-heading {
-  display: block;
-  font-size: 0.785rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 0.35rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.footer-rules-list {
-  margin: 0;
-  padding-left: 1.1rem;
-  font-size: 0.775rem;
-  color: var(--text-secondary);
-  line-height: 1.6;
-}
-
-.footer-rules-list li {
-  margin-bottom: 0.2rem;
-}
-
-.footer-bottom {
-  border-top: 1px solid var(--border-subtle);
-  padding-top: 1.25rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
-  font-size: 0.785rem;
-  color: var(--text-muted);
-}
-
-.footer-tech-stack {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  flex-wrap: wrap;
-}
-
-.tech-tag {
-  font-size: 0.7rem;
-  font-weight: 600;
-  padding: 0.15rem 0.5rem;
-  border-radius: var(--radius-full);
-  background-color: var(--bg-surface-subtle);
-  color: var(--text-secondary);
-  border: 1px solid var(--border-subtle);
 }
