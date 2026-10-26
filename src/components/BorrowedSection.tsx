@@ -4,8 +4,10 @@ import { useAppDispatch } from '../hooks/useAppDispatch';
 import { returnBook } from '../features/books/booksSlice';
 import { removeBorrow } from '../features/borrow/borrowSlice';
 import BookCard from './BookCard/BookCard';
-import { WarningIcon } from './Icons';
+import { WarningIcon, BookIcon, CheckIcon } from './Icons';
 import type { Book } from '../types';
+
+const BORROW_MAX = 3;
 
 const BorrowedSection: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -23,25 +25,52 @@ const BorrowedSection: React.FC = () => {
     [dispatch]
   );
 
-  // Dummy callback cho prop onBorrow vì sách mượn hiển thị nút Trả
   const handleBorrow = useCallback((_id: string) => {}, []);
 
   if (borrowedBooks.length === 0 && !limitWarning) return null;
 
+  const remainingSlots = Math.max(0, BORROW_MAX - borrowedBooks.length);
+
   return (
     <section className="borrowed-section" aria-labelledby="borrowed-heading">
       <div className="borrowed-section__header">
-        <div className="borrowed-title-group">
-          <h2 id="borrowed-heading" className="section-title">
-            Sách đang mượn
-          </h2>
-          <span className="borrow-badge" title="Số lượng sách bạn đang mượn">
-            {borrowedBooks.length} / 3 cuốn
-          </span>
+        <div className="borrowed-header-left">
+          <div className="borrowed-title-group">
+            <h2 id="borrowed-heading" className="section-title">
+              Sách đang mượn
+            </h2>
+            <span
+              className={`borrow-badge ${
+                borrowedBooks.length >= BORROW_MAX ? 'borrow-badge--max' : ''
+              }`}
+              title="Hạn ngạch mượn sách của bạn"
+            >
+              {borrowedBooks.length} / {BORROW_MAX} cuốn
+            </span>
+          </div>
+          <p className="borrowed-subtitle">
+            Hạn ngạch mượn tối đa 3 cuốn cùng lúc. {remainingSlots > 0 ? `Bạn còn có thể mượn thêm ${remainingSlots} cuốn.` : 'Bạn đã đạt giới hạn tối đa.'}
+          </p>
         </div>
-        <p className="borrowed-subtitle">
-          Theo dõi và quản lý những cuốn sách bạn đã đăng ký mượn tại thư viện
-        </p>
+
+        {/* Visual Borrow Quota Tracker */}
+        <div className="quota-tracker" aria-label="Hạn mức mượn sách">
+          {[0, 1, 2].map((index) => {
+            const isFilled = index < borrowedBooks.length;
+            const bookAtSlot = borrowedBooks[index];
+
+            return (
+              <div
+                key={index}
+                className={`quota-slot ${isFilled ? 'quota-slot--filled' : 'quota-slot--empty'}`}
+                title={isFilled ? `Cuốn ${index + 1}: ${bookAtSlot?.title}` : `Ô ${index + 1}: Còn trống`}
+              >
+                {isFilled ? <CheckIcon size={13} /> : <BookIcon size={13} />}
+                <span>Cuốn {index + 1}</span>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       {limitWarning && (

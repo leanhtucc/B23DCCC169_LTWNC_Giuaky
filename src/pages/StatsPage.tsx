@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useAppSelector } from '../hooks/useAppSelector';
 import type { BookCategory, ReadonlyRecord, Book } from '../types';
-import { BookIcon, BorrowIcon, CheckIcon, CodeIcon, ChartIcon, GlobeIcon } from '../components/Icons';
+import { BookIcon, BorrowIcon, CheckIcon, CodeIcon, ChartIcon, GlobeIcon, SparklesIcon } from '../components/Icons';
 
 const CATEGORIES: BookCategory[] = ['CNTT', 'Kinh tế', 'Ngoại ngữ'];
 
@@ -9,6 +9,12 @@ const categoryIcons: ReadonlyRecord<BookCategory, React.ReactNode> = {
   CNTT: <CodeIcon size={16} />,
   'Kinh tế': <ChartIcon size={16} />,
   'Ngoại ngữ': <GlobeIcon size={16} />,
+};
+
+const categoryBarColors: ReadonlyRecord<BookCategory, string> = {
+  CNTT: '#3b82f6',
+  'Kinh tế': '#10b981',
+  'Ngoại ngữ': '#8b5cf6',
 };
 
 interface CategoryStat {
@@ -36,6 +42,7 @@ const StatsPage: React.FC = () => {
   const totalCopies = books.reduce((sum, b) => sum + b.total, 0);
   const totalAvailable = books.reduce((sum, b) => sum + b.available, 0);
   const totalBorrowed = borrowedIds.length;
+  const circulationRate = totalCopies > 0 ? Math.round((totalBorrowed / totalCopies) * 100) : 0;
 
   return (
     <main className="stats-page">
@@ -85,6 +92,55 @@ const StatsPage: React.FC = () => {
             <div className="metric-card__value metric-card__value--success">{totalAvailable}</div>
             <div className="metric-card__hint">Có thể mượn ngay trên giá sách</div>
           </div>
+
+          <div className="metric-card">
+            <div className="metric-card__header">
+              <span className="metric-card__label">Tỷ lệ lưu thông</span>
+              <span className="metric-card__icon" aria-hidden="true">
+                <SparklesIcon size={18} />
+              </span>
+            </div>
+            <div className="metric-card__value">{circulationRate}%</div>
+            <div className="metric-card__hint">Công suất khai thác tài liệu</div>
+          </div>
+        </section>
+
+        {/* Global Collection Distribution Bar */}
+        <section className="collection-distribution-card" aria-label="Tỷ lệ phân bổ tài liệu">
+          <div className="distribution-header">
+            <h3 className="distribution-title">Tỷ lệ phân bổ kho sách</h3>
+            <span className="distribution-subtitle">3 chuyên ngành chính</span>
+          </div>
+
+          <div className="distribution-bar" aria-hidden="true">
+            {statsByCategory.map(({ category, totalCopies: copies }) => {
+              const share = totalCopies > 0 ? Math.round((copies / totalCopies) * 100) : 0;
+              return (
+                <div
+                  key={category}
+                  className="distribution-bar__segment"
+                  style={{
+                    flex: copies,
+                    backgroundColor: categoryBarColors[category],
+                  }}
+                  title={`${category}: ${copies} bản (${share}%)`}
+                />
+              );
+            })}
+          </div>
+
+          <div className="distribution-legend">
+            {statsByCategory.map(({ category, totalCopies: copies }) => (
+              <div key={category} className="legend-item">
+                <span
+                  className="legend-color-dot"
+                  style={{ backgroundColor: categoryBarColors[category] }}
+                />
+                <span className="legend-name">{category}</span>
+                <span className="legend-count">{copies} bản</span>
+              </div>
+            ))}
+          </div>
         </section>
 
         {/* Breakdown by Category */}
@@ -99,9 +155,9 @@ const StatsPage: React.FC = () => {
           </div>
 
           <div className="category-grid">
-            {statsByCategory.map(({ category, totalTitles, totalCopies, availableCopies }) => {
+            {statsByCategory.map(({ category, totalTitles, totalCopies: copies, availableCopies }) => {
               const availabilityPercent =
-                totalCopies > 0 ? Math.round((availableCopies / totalCopies) * 100) : 0;
+                copies > 0 ? Math.round((availableCopies / copies) * 100) : 0;
 
               return (
                 <article className="category-card" key={category}>
@@ -120,7 +176,7 @@ const StatsPage: React.FC = () => {
                     </div>
                     <div className="data-row">
                       <dt>Tổng số bản:</dt>
-                      <dd>{totalCopies} bản</dd>
+                      <dd>{copies} bản</dd>
                     </div>
                     <div className="data-row">
                       <dt>Còn trên kệ:</dt>
@@ -131,7 +187,10 @@ const StatsPage: React.FC = () => {
                   <div className="progress-container" aria-hidden="true">
                     <div
                       className="progress-bar"
-                      style={{ width: `${availabilityPercent}%` }}
+                      style={{
+                        width: `${availabilityPercent}%`,
+                        backgroundColor: categoryBarColors[category],
+                      }}
                     />
                   </div>
                 </article>

@@ -1,21 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useFilterStore } from '../store/useFilterStore';
 import { useDebounce } from '../hooks/useDebounce';
 import { SearchIcon } from './Icons';
 
 const SearchBar: React.FC = () => {
   const [inputValue, setInputValue] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
   const setKeyword = useFilterStore((s) => s.setKeyword);
   const debouncedValue = useDebounce<string>(inputValue, 300);
 
   // Sync debounced value vào Zustand store
-  React.useEffect(() => {
+  useEffect(() => {
     setKeyword(debouncedValue);
   }, [debouncedValue, setKeyword]);
+
+  // Phím tắt bàn phím '/' để nhảy nhanh vào ô tìm kiếm
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (
+        e.key === '/' &&
+        document.activeElement !== inputRef.current &&
+        !(document.activeElement instanceof HTMLInputElement) &&
+        !(document.activeElement instanceof HTMLTextAreaElement)
+      ) {
+        e.preventDefault();
+        inputRef.current?.focus();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const handleClear = () => {
     setInputValue('');
     setKeyword('');
+    inputRef.current?.focus();
   };
 
   return (
@@ -24,6 +44,7 @@ const SearchBar: React.FC = () => {
         <SearchIcon size={16} />
       </span>
       <input
+        ref={inputRef}
         type="text"
         className="search-bar__input"
         placeholder="Tìm kiếm theo tên sách hoặc tác giả..."
@@ -31,7 +52,7 @@ const SearchBar: React.FC = () => {
         onChange={(e) => setInputValue(e.target.value)}
         aria-label="Tìm kiếm sách"
       />
-      {inputValue && (
+      {inputValue ? (
         <button
           type="button"
           className="search-bar__clear"
@@ -44,6 +65,10 @@ const SearchBar: React.FC = () => {
             <line x1="6" y1="6" x2="18" y2="18" />
           </svg>
         </button>
+      ) : (
+        <kbd className="search-bar__shortcut" title="Nhấn phím '/' để tìm kiếm nhanh">
+          /
+        </kbd>
       )}
     </div>
   );
