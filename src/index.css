@@ -242,27 +242,30 @@ html, body {
 }
 
 /* ==========================================================================
-   Navbar — Modern, Bright in Light Mode, Seamless Dark in Dark Mode
+   Navbar — Modern Glassmorphism & Capsule Navigation (Inspired by lucian-ref 039/047/021)
    ========================================================================== */
 
 .navbar-container {
   background-color: var(--bg-navbar);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border-navbar);
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: var(--shadow-xs);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04);
   transition: background-color var(--duration-normal) ease, border-color var(--duration-normal) ease;
 }
 
 .navbar {
   max-width: 1200px;
   margin: 0 auto;
-  height: 60px;
+  height: 64px;
   padding: 0 1.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 1rem;
 }
 
 .navbar__brand {
@@ -276,13 +279,18 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   background-color: var(--bg-navbar-badge);
   border: 1px solid var(--border-navbar-badge);
   border-radius: var(--radius-sm);
   color: var(--text-navbar-badge);
+  box-shadow: 0 2px 4px rgba(29, 78, 216, 0.08);
   transition: all var(--duration-fast);
+}
+
+.navbar__brand:hover .navbar__brand-badge {
+  transform: translateY(-1px);
 }
 
 .navbar__brand-text {
@@ -295,74 +303,157 @@ html, body {
   font-weight: 700;
   color: var(--text-navbar-brand);
   line-height: 1.2;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.02em;
 }
 
-.navbar__subtitle {
-  font-size: 0.75rem;
-  color: var(--text-navbar-subtitle);
-  line-height: 1.2;
-}
-
-.navbar__actions {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.navbar__links {
+.navbar__status-row {
   display: flex;
   align-items: center;
   gap: 0.35rem;
+  margin-top: 1px;
 }
 
-.nav-link {
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-success);
+  box-shadow: 0 0 0 2px var(--color-success-bg);
+}
+
+.navbar__subtitle {
+  font-size: 0.725rem;
+  color: var(--text-navbar-subtitle);
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+/* Sliding Pill Navigation Container (lucian-ref 039 / 047 pattern) */
+.navbar__pill-container {
   display: flex;
+  align-items: center;
+  padding: 3px;
+  background-color: var(--bg-surface-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  gap: 2px;
+}
+
+.navbar__pill-tab {
+  display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  padding: 0.45rem 0.85rem;
-  font-size: 0.875rem;
+  padding: 0.425rem 1rem;
+  font-size: 0.85rem;
   font-weight: 500;
-  color: var(--text-navbar-link);
+  color: var(--text-muted);
   text-decoration: none;
-  border-radius: var(--radius-sm);
-  transition: color var(--duration-fast), background-color var(--duration-fast);
+  border-radius: var(--radius-full);
+  transition: all var(--duration-fast) var(--ease-natural);
+  white-space: nowrap;
 }
 
-.nav-link:hover {
-  color: var(--hover-navbar-link);
-  background-color: var(--hover-navbar-link-bg);
+.navbar__pill-tab:hover {
+  color: var(--text-primary);
 }
 
-.nav-link--active {
-  color: var(--active-navbar-link);
-  background-color: var(--active-navbar-link-bg);
+.navbar__pill-tab--active {
+  color: var(--text-primary);
+  background-color: var(--bg-surface);
   font-weight: 600;
+  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.08), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
 }
 
-.navbar__divider {
-  width: 1px;
-  height: 20px;
-  background-color: var(--divider-navbar);
+.theme-dark .navbar__pill-tab--active {
+  color: #ffffff;
+  background-color: var(--bg-surface-elevated);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4), 0 0 0 1px var(--border-subtle);
 }
 
-.theme-toggle {
+/* Actions Right */
+.navbar__actions {
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  background-color: transparent;
-  border: 1px solid var(--toggle-navbar-border);
-  border-radius: var(--radius-sm);
-  color: var(--toggle-navbar-text);
-  cursor: pointer;
+  gap: 0.85rem;
+}
+
+.nav-loan-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.785rem;
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+  border: 1px solid var(--color-success-border);
+  text-decoration: none;
   transition: all var(--duration-fast);
 }
 
-.theme-toggle:hover {
-  background-color: var(--toggle-navbar-hover);
-  color: var(--text-primary);
+.nav-loan-chip:hover {
+  transform: translateY(-1px);
+}
+
+.nav-loan-chip--full {
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning);
+  border-color: var(--color-warning-border);
+}
+
+/* Day-Night Sky Pill Switcher (lucian-ref 021 pattern) */
+.theme-pill-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 58px;
+  height: 30px;
+  padding: 0 6px;
+  border-radius: var(--radius-full);
+  background-color: var(--bg-surface-subtle);
+  border: 1px solid var(--border-subtle);
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-natural);
+}
+
+.theme-pill-switch:hover {
+  border-color: var(--border-strong);
+}
+
+.switch-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  transition: opacity var(--duration-fast);
+}
+
+.switch-icon--sun {
+  color: #f59e0b;
+}
+
+.switch-icon--moon {
+  color: #94a3b8;
+}
+
+.switch-knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-full);
+  background-color: var(--bg-surface);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15), 0 0 0 1px var(--border-subtle);
+  transition: transform var(--duration-normal) cubic-bezier(0.34, 1.56, 0.64, 1), background-color var(--duration-fast);
+}
+
+.theme-pill-switch.is-dark .switch-knob {
+  transform: translateX(28px);
+  background-color: var(--bg-surface-elevated);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 0 0 1px var(--border-strong);
 }
 
 /* ==========================================================================
