@@ -2,10 +2,9 @@ import React, { useEffect } from 'react';
 import { useAppDispatch } from '../hooks/useAppDispatch';
 import { useAppSelector } from '../hooks/useAppSelector';
 import { loadBooks } from '../features/books/booksSlice';
-import SearchBar from '../components/SearchBar';
-import CategoryFilter from '../components/CategoryFilter';
+import StudentDesk from '../components/StudentDesk';
+import SpotlightBook from '../components/SpotlightBook';
 import BookList from '../components/BookList';
-import BorrowedSection from '../components/BorrowedSection';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { RefreshIcon, WarningIcon, BookIcon } from '../components/Icons';
 
@@ -23,21 +22,22 @@ const HomePage: React.FC = () => {
 
   return (
     <main className="home-page">
+      {/* Streamlined Academic Header */}
       <header className="page-header">
         <div className="page-header__main">
           <div className="page-header__content">
             <div className="page-header__eyebrow">
               <span className="eyebrow-badge">
                 <BookIcon size={13} />
-                <span>Kho tài liệu chuyên ngành</span>
+                <span>Khoa Công nghệ Thông tin & Truyền thông</span>
               </span>
               {totalBooks > 0 && (
                 <span className="eyebrow-stat">{totalBooks} đầu sách sẵn sàng</span>
               )}
             </div>
-            <h1 className="page-title">Tra cứu & Mượn sách</h1>
+            <h1 className="page-title">Tra cứu & Mượn sách Chuyên ngành</h1>
             <p className="page-description">
-              Hệ thống thư viện khoa điện tử. Tìm kiếm đầu sách chuyên ngành, tra cứu số lượng bản còn sẵn và quản lý mượn trả tiện lợi.
+              Không gian học thuật số. Khám phá tài liệu chuyên sâu, quản lý hạn ngạch mượn trả realtime ngay trên bàn đọc cá nhân.
             </p>
           </div>
 
@@ -66,13 +66,7 @@ const HomePage: React.FC = () => {
         </div>
       </header>
 
-      <section className="catalog-toolbar" aria-label="Bộ lọc tìm kiếm">
-        <div className="toolbar-container">
-          <SearchBar />
-          <CategoryFilter />
-        </div>
-      </section>
-
+      {/* Main Bento Workspace Body */}
       <div className="page-body">
         {status === 'loading' && <LoadingSpinner />}
 
@@ -101,17 +95,29 @@ const HomePage: React.FC = () => {
         )}
 
         {status === 'succeeded' && (
-          <>
-            <BorrowedSection />
-            <section className="books-section" aria-labelledby="catalog-heading">
-              <div className="section-header">
-                <h2 id="catalog-heading" className="section-title">
-                  Danh mục sách
-                </h2>
-              </div>
-              <BookList />
-            </section>
-          </>
+          <div className="bento-workspace">
+            {/* Left: Sticky Personal Student Desk & Filters */}
+            <StudentDesk />
+
+            {/* Right: Main Shelf & Bento Spotlight */}
+            <div className="bento-main">
+              {/* Featured Book Spotlight */}
+              <SpotlightBook />
+
+              {/* Book Catalog Section */}
+              <section className="catalog-section" aria-labelledby="catalog-heading">
+                <div className="section-header">
+                  <div className="section-title-wrap">
+                    <h2 id="catalog-heading" className="section-title">
+                      Danh mục tài liệu
+                    </h2>
+                    <span className="section-count-badge">{totalBooks} cuốn</span>
+                  </div>
+                </div>
+                <BookList />
+              </section>
+            </div>
+          </div>
         )}
       </div>
     </main>
