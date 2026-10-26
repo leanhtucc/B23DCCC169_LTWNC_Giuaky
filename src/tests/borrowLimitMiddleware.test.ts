@@ -1,7 +1,7 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import booksReducer, { borrowBook } from '../features/books/booksSlice';
 import borrowReducer, { addBorrow } from '../features/borrow/borrowSlice';
-import { borrowLimitMiddleware } from './borrowLimitMiddleware';
+import { borrowLimitMiddleware } from '../middleware/borrowLimitMiddleware';
 import type { Book } from '../types';
 
 const mockBook: Book = {

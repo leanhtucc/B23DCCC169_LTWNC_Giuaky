@@ -1,11 +1,11 @@
-# 📚 Mini Library — Ứng Dụng Quản Lý Mượn / Trả Sách Thư Viện Khoa
+# Mini Library — Ứng Dụng Quản Lý Mượn / Trả Sách Thư Viện Khoa
 
 > **Bài thi giữa kỳ môn Lập trình Web Nâng cao (LTWNC)**  
 > Ứng dụng xây dựng trên nền tảng **React 18 + Vite + TypeScript**, vận dụng tổng hợp kiến thức từ Buổi 1 đến Buổi 6.
 
 ---
 
-## 🌟 Giới thiệu
+## Giới thiệu
 
 Thư viện khoa có hàng trăm đầu sách chuyên ngành nhưng việc mượn/trả trước đây vẫn ghi chép thủ công. **Mini Library** là giải pháp phần mềm hiện đại giúp:
 * Sinh viên tra cứu sách nhanh chóng theo tên, tác giả, thể loại.
@@ -15,7 +15,7 @@ Thư viện khoa có hàng trăm đầu sách chuyên ngành nhưng việc mư�
 
 ---
 
-## 🛠️ Công nghệ sử dụng
+## Công nghệ sử dụng
 
 | Công nghệ | Vai trò trong dự án |
 |---|---|
@@ -30,7 +30,7 @@ Thư viện khoa có hàng trăm đầu sách chuyên ngành nhưng việc mư�
 
 ---
 
-## 📋 Danh sách chức năng
+## Danh sách chức năng
 
 1. **Khởi động & API giả lập**: Gọi API bất đồng bộ với độ trễ 500ms, hiển thị trạng thái *"Đang tải..."* và thông báo lỗi nếu API gặp sự cố (có nút bấm test lỗi và nút thử lại).
 2. **Hiển thị danh sách sách**: Chi tiết tên sách, tác giả, thể loại (CNTT / Kinh tế / Ngoại ngữ), năm xuất bản, thanh trực quan tiến độ và số bản còn lại.
@@ -44,7 +44,7 @@ Thư viện khoa có hàng trăm đầu sách chuyên ngành nhưng việc mư�
 
 ---
 
-## 🔍 Chi tiết triển khai theo yêu cầu kỹ thuật
+## Chi tiết triển khai theo yêu cầu kỹ thuật
 
 ### 1. TypeScript nâng cao
 * **Generic API Response**:
@@ -113,15 +113,15 @@ export function useDebounce<T>(value: T, delay: number): T {
 
 ---
 
-## 🧪 Kết quả kiểm thử (Unit & Integration Tests)
+## Kết quả kiểm thử (Unit & Integration Tests)
 
 Hệ thống kiểm thử với Jest và React Testing Library đạt **17/17 tests PASS**:
 
 ```bash
-PASS src/hooks/useDebounce.test.ts
-PASS src/middleware/borrowLimitMiddleware.test.ts
-PASS src/features/books/booksSlice.test.ts
-PASS src/components/BookCard/BookCard.test.tsx
+PASS src/tests/borrowLimitMiddleware.test.ts
+PASS src/tests/booksSlice.test.ts
+PASS src/tests/useDebounce.test.ts
+PASS src/tests/BookCard.test.tsx
 
 Test Suites: 4 passed, 4 total
 Tests:       17 passed, 17 total
@@ -136,7 +136,7 @@ Time:        4.068 s
 
 ---
 
-## 📁 Cấu trúc thư mục dự án
+## Cấu trúc thư mục dự án
 
 ```
 MiniLibrary/
@@ -152,8 +152,7 @@ MiniLibrary/
 │   │   └── store.ts                # Cấu hình Redux store & RootState
 │   ├── components/
 │   │   ├── BookCard/
-│   │   │   ├── BookCard.tsx        # Component hiển thị sách (React.memo)
-│   │   │   └── BookCard.test.tsx   # Kiểm thử RTL cho BookCard
+│   │   │   └── BookCard.tsx        # Component hiển thị sách (React.memo)
 │   │   ├── BookList.tsx            # Danh sách sách tối ưu useMemo
 │   │   ├── BorrowedSection.tsx     # Danh sách các sách đang mượn
 │   │   ├── CategoryFilter.tsx      # Lọc thể loại liên kết Zustand
@@ -164,23 +163,25 @@ MiniLibrary/
 │   │   └── ThemeContext.tsx        # Context API quản lý Light/Dark theme
 │   ├── features/
 │   │   ├── books/
-│   │   │   ├── booksSlice.ts       # Slice quản lý sách & async thunk
-│   │   │   └── booksSlice.test.ts  # Kiểm thử reducer booksSlice
+│   │   │   └── booksSlice.ts       # Slice quản lý sách & async thunk
 │   │   └── borrow/
 │   │       └── borrowSlice.ts      # Slice quản lý danh sách mượn
 │   ├── hooks/
 │   │   ├── useAppDispatch.ts       # Typed Redux dispatch
 │   │   ├── useAppSelector.ts       # Typed Redux selector
-│   │   ├── useDebounce.ts          # Custom hook generic useDebounce<T>
-│   │   └── useDebounce.test.ts     # Kiểm thử hook với fake timers
+│   │   └── useDebounce.ts          # Custom hook generic useDebounce<T>
 │   ├── middleware/
-│   │   ├── borrowLimitMiddleware.ts      # Middleware giới hạn mượn 3 cuốn
-│   │   └── borrowLimitMiddleware.test.ts # Kiểm thử middleware
+│   │   └── borrowLimitMiddleware.ts      # Middleware giới hạn mượn 3 cuốn
 │   ├── pages/
 │   │   ├── HomePage.tsx            # Trang chủ
 │   │   └── StatsPage.tsx           # Trang thống kê (Lazy load)
 │   ├── store/
 │   │   └── useFilterStore.ts       # Zustand store cho từ khóa & thể loại
+│   ├── tests/                      # Toàn bộ test tập trung tại một thư mục duy nhất
+│   │   ├── BookCard.test.tsx       # Kiểm thử RTL cho BookCard
+│   │   ├── booksSlice.test.ts      # Kiểm thử reducer booksSlice
+│   │   ├── borrowLimitMiddleware.test.ts # Kiểm thử middleware giới hạn 3 cuốn
+│   │   └── useDebounce.test.ts     # Kiểm thử hook với fake timers
 │   ├── types/
 │   │   └── index.ts                # Định nghĩa toàn bộ kiểu dữ liệu & guard
 │   ├── App.tsx                     # Định tuyến & bọc Provider
@@ -198,7 +199,7 @@ MiniLibrary/
 
 ---
 
-## 🚀 Hướng dẫn cài đặt & khởi chạy
+## Hướng dẫn cài đặt & khởi chạy
 
 ### 1. Cài đặt các gói phụ thuộc
 ```bash
@@ -228,7 +229,7 @@ npm run preview
 
 ---
 
-## 📌 Hướng dẫn nộp bài GitHub
+## Hướng dẫn nộp bài GitHub
 
 Theo đúng quy định của đề thi:
 1. Tạo một repository mới trên GitHub với tên: `<Mã_sinh_viên>_LTWNC_Giuaky`

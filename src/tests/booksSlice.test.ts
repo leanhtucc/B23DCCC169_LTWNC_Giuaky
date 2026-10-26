@@ -2,8 +2,8 @@ import booksReducer, {
   borrowBook,
   returnBook,
   loadBooks,
-} from './booksSlice';
-import type { BooksState, Book } from '../../types';
+} from '../features/books/booksSlice';
+import type { BooksState, Book } from '../types';
 
 const mockBook: Book = {
   id: '1',

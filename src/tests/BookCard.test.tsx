@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import BookCard from './BookCard';
-import type { Book } from '../../types';
+import BookCard from '../components/BookCard/BookCard';
+import type { Book } from '../types';
 
 const mockBook: Book = {
   id: 'book-1',
