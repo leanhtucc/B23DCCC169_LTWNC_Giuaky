@@ -1,12 +1,15 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useState, useEffect } from 'react';
 import { useAppSelector } from '../hooks/useAppSelector';
 import { useAppDispatch } from '../hooks/useAppDispatch';
 import { borrowBook, returnBook } from '../features/books/booksSlice';
 import { addBorrow, removeBorrow } from '../features/borrow/borrowSlice';
 import { useFilterStore } from '../store/useFilterStore';
 import BookCard from './BookCard/BookCard';
+import Pagination from './Pagination';
 import { RefreshIcon, SearchIcon } from './Icons';
 import type { Book } from '../types';
+
+const DEFAULT_PAGE_SIZE = 6;
 
 const BookList: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -16,6 +19,9 @@ const BookList: React.FC = () => {
   const category = useFilterStore((s) => s.category);
   const setKeyword = useFilterStore((s) => s.setKeyword);
   const setCategory = useFilterStore((s) => s.setCategory);
+
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
 
   // useMemo: tính danh sách lọc chỉ khi books/keyword/category thay đổi
   const filteredBooks = useMemo<Book[]>(() => {
@@ -29,6 +35,26 @@ const BookList: React.FC = () => {
       return matchesKeyword && matchesCategory;
     });
   }, [books, keyword, category]);
+
+  // Reset trang về 1 khi từ khóa tìm kiếm hoặc thể loại thay đổi
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [keyword, category]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredBooks.length / pageSize));
+
+  // Đảm bảo currentPage không vượt quá totalPages khi danh sách bị thu hẹp
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
+
+  // Danh sách sách trên trang hiện tại
+  const paginatedBooks = useMemo<Book[]>(() => {
+    const startIndex = (currentPage - 1) * pageSize;
+    return filteredBooks.slice(startIndex, startIndex + pageSize);
+  }, [filteredBooks, currentPage, pageSize]);
 
   // useCallback: handler ổn định không recreate mỗi render
   const handleBorrow = useCallback(
@@ -50,7 +76,22 @@ const BookList: React.FC = () => {
   const handleResetFilters = useCallback(() => {
     setKeyword('');
     setCategory('Tất cả');
+    setCurrentPage(1);
   }, [setKeyword, setCategory]);
+
+  const handlePageChange = useCallback((page: number) => {
+    setCurrentPage(page);
+    // Cuộn nhẹ lên đầu danh mục khi chuyển trang
+    const catalogElement = document.getElementById('catalog-heading');
+    if (catalogElement) {
+      catalogElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, []);
+
+  const handlePageSizeChange = useCallback((newSize: number) => {
+    setPageSize(newSize);
+    setCurrentPage(1);
+  }, []);
 
   if (filteredBooks.length === 0) {
     return (
@@ -105,6 +146,11 @@ const BookList: React.FC = () => {
       <div className="results-meta">
         <span className="results-count">
           Đang hiển thị <strong>{filteredBooks.length}</strong> / {books.length} đầu sách
+          {totalPages > 1 && (
+            <span className="results-page-tag">
+              (Trang {currentPage} / {totalPages})
+            </span>
+          )}
         </span>
         {(keyword || category !== 'Tất cả') && (
           <button
@@ -119,7 +165,7 @@ const BookList: React.FC = () => {
       </div>
 
       <div className="book-grid">
-        {filteredBooks.map((book) => (
+        {paginatedBooks.map((book) => (
           <BookCard
             key={book.id}
             book={book}
@@ -129,6 +175,16 @@ const BookList: React.FC = () => {
           />
         ))}
       </div>
+
+      {/* Pagination Controls */}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalItems={filteredBooks.length}
+        pageSize={pageSize}
+        onPageChange={handlePageChange}
+        onPageSizeChange={handlePageSizeChange}
+      />
     </>
   );
 };
