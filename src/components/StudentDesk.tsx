@@ -167,7 +167,7 @@ const StudentDesk: React.FC = () => {
           </div>
         ) : (
           <div className="desk-empty-hint">
-            <span>Bàn đọc đang trống. Hãy chọn sách từ danh mục bên phải để mượn.</span>
+            <span>Bàn đọc đang trống. Hãy chọn cuốn sách bạn muốn đọc từ danh mục để bắt đầu mượn.</span>
           </div>
         )}
       </div>
