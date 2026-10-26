@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { useAppSelector } from '../hooks/useAppSelector';
 import { useAppDispatch } from '../hooks/useAppDispatch';
 import { returnBook } from '../features/books/booksSlice';
-import { removeBorrow } from '../features/borrow/borrowSlice';
+import { removeBorrow, setLimitWarning } from '../features/borrow/borrowSlice';
 import BookCard from './BookCard/BookCard';
 import { WarningIcon, BookIcon, CheckIcon } from './Icons';
 import type { Book } from '../types';
@@ -25,6 +25,10 @@ const BorrowedSection: React.FC = () => {
     [dispatch]
   );
 
+  const handleDismissWarning = useCallback(() => {
+    dispatch(setLimitWarning(false));
+  }, [dispatch]);
+
   const handleBorrow = useCallback((_id: string) => {}, []);
 
   if (borrowedBooks.length === 0 && !limitWarning) return null;
@@ -32,7 +36,7 @@ const BorrowedSection: React.FC = () => {
   const remainingSlots = Math.max(0, BORROW_MAX - borrowedBooks.length);
 
   return (
-    <section className="borrowed-section" aria-labelledby="borrowed-heading">
+    <section id="borrowed" className="borrowed-section" aria-labelledby="borrowed-heading">
       <div className="borrowed-section__header">
         <div className="borrowed-header-left">
           <div className="borrowed-title-group">
@@ -49,7 +53,10 @@ const BorrowedSection: React.FC = () => {
             </span>
           </div>
           <p className="borrowed-subtitle">
-            Hạn ngạch mượn tối đa 3 cuốn cùng lúc. {remainingSlots > 0 ? `Bạn còn có thể mượn thêm ${remainingSlots} cuốn.` : 'Bạn đã đạt giới hạn tối đa.'}
+            Hạn ngạch mượn tối đa 3 cuốn cùng lúc.{' '}
+            {remainingSlots > 0
+              ? `Bạn còn có thể mượn thêm ${remainingSlots} cuốn.`
+              : 'Bạn đã đạt giới hạn tối đa.'}
           </p>
         </div>
 
@@ -63,7 +70,11 @@ const BorrowedSection: React.FC = () => {
               <div
                 key={index}
                 className={`quota-slot ${isFilled ? 'quota-slot--filled' : 'quota-slot--empty'}`}
-                title={isFilled ? `Cuốn ${index + 1}: ${bookAtSlot?.title}` : `Ô ${index + 1}: Còn trống`}
+                title={
+                  isFilled
+                    ? `Cuốn ${index + 1}: ${bookAtSlot?.title}`
+                    : `Ô ${index + 1}: Còn trống`
+                }
               >
                 {isFilled ? <CheckIcon size={13} /> : <BookIcon size={13} />}
                 <span>Cuốn {index + 1}</span>
@@ -74,13 +85,22 @@ const BorrowedSection: React.FC = () => {
       </div>
 
       {limitWarning && (
-        <div className="alert alert--warning" role="alert">
+        <div className="alert alert--warning alert--dismissible" role="alert">
           <span className="alert__icon">
             <WarningIcon size={18} />
           </span>
           <div className="alert__content">
             <strong>Đã đạt giới hạn mượn:</strong> Mỗi sinh viên chỉ được mượn tối đa 3 cuốn cùng lúc. Vui lòng trả bớt sách trước khi mượn thêm cuốn mới.
           </div>
+          <button
+            type="button"
+            className="alert__close"
+            onClick={handleDismissWarning}
+            aria-label="Đóng cảnh báo"
+            title="Đóng thông báo này"
+          >
+            ×
+          </button>
         </div>
       )}
 

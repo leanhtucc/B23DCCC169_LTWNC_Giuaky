@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { store } from './app/store';
 import { ThemeProvider } from './context/ThemeContext';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
 import LoadingSpinner from './components/LoadingSpinner';
 
@@ -15,19 +16,22 @@ const App: React.FC = () => {
     <Provider store={store}>
       <ThemeProvider>
         <BrowserRouter>
-          <Navbar />
-          <div className="page-content">
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route
-                path="/stats"
-                element={
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <StatsPage />
-                  </Suspense>
-                }
-              />
-            </Routes>
+          <div className="app-shell">
+            <Navbar />
+            <div className="page-content">
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route
+                  path="/stats"
+                  element={
+                    <Suspense fallback={<LoadingSpinner />}>
+                      <StatsPage />
+                    </Suspense>
+                  }
+                />
+              </Routes>
+            </div>
+            <Footer />
           </div>
         </BrowserRouter>
       </ThemeProvider>

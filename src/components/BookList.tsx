@@ -5,7 +5,7 @@ import { borrowBook, returnBook } from '../features/books/booksSlice';
 import { addBorrow, removeBorrow } from '../features/borrow/borrowSlice';
 import { useFilterStore } from '../store/useFilterStore';
 import BookCard from './BookCard/BookCard';
-import { RefreshIcon } from './Icons';
+import { RefreshIcon, SearchIcon } from './Icons';
 import type { Book } from '../types';
 
 const BookList: React.FC = () => {
@@ -55,7 +55,9 @@ const BookList: React.FC = () => {
   if (filteredBooks.length === 0) {
     return (
       <div className="empty-state">
-        <div className="empty-state__icon-box">📭</div>
+        <div className="empty-state__icon-box" aria-hidden="true">
+          <SearchIcon size={28} />
+        </div>
         <h3 className="empty-state__title">Không tìm thấy sách phù hợp</h3>
         <p className="empty-state__desc">
           Không có đầu sách nào khớp với từ khóa <strong>"{keyword}"</strong>{' '}
@@ -64,15 +66,35 @@ const BookList: React.FC = () => {
               trong thể loại <strong>{category}</strong>
             </span>
           )}
-          . Vui lòng kiểm tra lại chính tả hoặc xóa bộ lọc.
+          .
         </p>
+        <div className="empty-state__tips">
+          <span className="empty-state__tips-title">Gợi ý tìm kiếm:</span>
+          <ul className="empty-state__tips-list">
+            <li>Kiểm tra lại chính tả hoặc thử tìm bằng từ khóa ngắn gọn hơn</li>
+            <li>Tìm kiếm theo tên tác giả (VD: <em>Robert</em>, <em>Nguyễn</em>, <em>Thomas</em>)</li>
+            {category !== 'Tất cả' && (
+              <li>
+                Chuyển thể loại về{' '}
+                <button
+                  type="button"
+                  className="inline-filter-link"
+                  onClick={() => setCategory('Tất cả')}
+                >
+                  Tất cả
+                </button>{' '}
+                để tìm trong toàn bộ kho sách
+              </li>
+            )}
+          </ul>
+        </div>
         <button
           type="button"
           className="btn btn--secondary btn--sm"
           onClick={handleResetFilters}
         >
           <RefreshIcon size={14} />
-          <span>Đặt lại bộ lọc</span>
+          <span>Đặt lại tất cả bộ lọc</span>
         </button>
       </div>
     );

@@ -25,6 +25,7 @@ const BookCard: React.FC<BookCardProps> = ({ book, isBorrowed, onBorrow, onRetur
   }, [onReturn, book.id]);
 
   const isDisabled = book.available === 0 && !isBorrowed;
+  const isLowStock = book.available > 0 && book.available / book.total <= 0.4;
   const availablePercent = Math.round((book.available / book.total) * 100);
   const styleConfig = categoryStyles[book.category] ?? {
     badge: 'badge-default',
@@ -64,7 +65,11 @@ const BookCard: React.FC<BookCardProps> = ({ book, isBorrowed, onBorrow, onRetur
               <span className="stock-label">Tình trạng:</span>
               <span
                 className={`stock-status ${
-                  book.available === 0 ? 'stock-status--empty' : 'stock-status--available'
+                  book.available === 0
+                    ? 'stock-status--empty'
+                    : isLowStock
+                    ? 'stock-status--low'
+                    : 'stock-status--available'
                 }`}
               >
                 {book.available === 0 ? 'Hết bản' : `Còn ${book.available}/${book.total} bản`}
@@ -72,7 +77,13 @@ const BookCard: React.FC<BookCardProps> = ({ book, isBorrowed, onBorrow, onRetur
             </div>
             <div className="stock-bar" aria-hidden="true">
               <div
-                className={`stock-bar__fill ${book.available === 0 ? 'stock-bar__fill--empty' : ''}`}
+                className={`stock-bar__fill ${
+                  book.available === 0
+                    ? 'stock-bar__fill--empty'
+                    : isLowStock
+                    ? 'stock-bar__fill--low'
+                    : ''
+                }`}
                 style={{ width: `${availablePercent}%` }}
               />
             </div>

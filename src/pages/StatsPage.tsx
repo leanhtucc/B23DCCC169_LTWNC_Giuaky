@@ -1,7 +1,16 @@
 import React, { useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { useAppSelector } from '../hooks/useAppSelector';
 import type { BookCategory, ReadonlyRecord, Book } from '../types';
-import { BookIcon, BorrowIcon, CheckIcon, CodeIcon, ChartIcon, GlobeIcon, SparklesIcon } from '../components/Icons';
+import {
+  BookIcon,
+  BorrowIcon,
+  CheckIcon,
+  CodeIcon,
+  ChartIcon,
+  GlobeIcon,
+  SparklesIcon,
+} from '../components/Icons';
 
 const CATEGORIES: BookCategory[] = ['CNTT', 'Kinh tế', 'Ngoại ngữ'];
 
@@ -54,13 +63,20 @@ const StatsPage: React.FC = () => {
               Tổng quan tình hình phân bổ tài liệu, tỷ lệ sẵn sàng và dữ liệu mượn sách theo từng thể loại chuyên ngành.
             </p>
           </div>
+
+          <div className="page-header__actions">
+            <Link to="/" className="btn btn--secondary btn--sm">
+              <BookIcon size={14} />
+              <span>Quay lại Tra cứu</span>
+            </Link>
+          </div>
         </div>
       </header>
 
       <div className="page-body">
         {/* KPI Overview Metrics */}
         <section className="metrics-grid" aria-label="Chỉ số tổng quan">
-          <div className="metric-card">
+          <div className="metric-card metric-card--titles">
             <div className="metric-card__header">
               <span className="metric-card__label">Tổng số đầu sách</span>
               <span className="metric-card__icon" aria-hidden="true">
@@ -71,7 +87,7 @@ const StatsPage: React.FC = () => {
             <div className="metric-card__hint">Quy mô toàn thư viện ({totalCopies} bản in)</div>
           </div>
 
-          <div className="metric-card">
+          <div className="metric-card metric-card--borrowed">
             <div className="metric-card__header">
               <span className="metric-card__label">Đang được mượn</span>
               <span className="metric-card__icon metric-card__icon--warning" aria-hidden="true">
@@ -82,7 +98,7 @@ const StatsPage: React.FC = () => {
             <div className="metric-card__hint">Đang do sinh viên lưu giữ</div>
           </div>
 
-          <div className="metric-card">
+          <div className="metric-card metric-card--available">
             <div className="metric-card__header">
               <span className="metric-card__label">Bản in sẵn sàng</span>
               <span className="metric-card__icon metric-card__icon--success" aria-hidden="true">
@@ -93,7 +109,7 @@ const StatsPage: React.FC = () => {
             <div className="metric-card__hint">Có thể mượn ngay trên giá sách</div>
           </div>
 
-          <div className="metric-card">
+          <div className="metric-card metric-card--rate">
             <div className="metric-card__header">
               <span className="metric-card__label">Tỷ lệ lưu thông</span>
               <span className="metric-card__icon" aria-hidden="true">
@@ -108,8 +124,11 @@ const StatsPage: React.FC = () => {
         {/* Global Collection Distribution Bar */}
         <section className="collection-distribution-card" aria-label="Tỷ lệ phân bổ tài liệu">
           <div className="distribution-header">
-            <h3 className="distribution-title">Tỷ lệ phân bổ kho sách</h3>
-            <span className="distribution-subtitle">3 chuyên ngành chính</span>
+            <div>
+              <h3 className="distribution-title">Tỷ lệ phân bổ kho sách</h3>
+              <span className="distribution-subtitle">Phân bố bản in theo 3 chuyên ngành</span>
+            </div>
+            <span className="distribution-total-badge">{totalCopies} bản in</span>
           </div>
 
           <div className="distribution-bar" aria-hidden="true">
@@ -130,16 +149,22 @@ const StatsPage: React.FC = () => {
           </div>
 
           <div className="distribution-legend">
-            {statsByCategory.map(({ category, totalCopies: copies }) => (
-              <div key={category} className="legend-item">
-                <span
-                  className="legend-color-dot"
-                  style={{ backgroundColor: categoryBarColors[category] }}
-                />
-                <span className="legend-name">{category}</span>
-                <span className="legend-count">{copies} bản</span>
-              </div>
-            ))}
+            {statsByCategory.map(({ category, totalCopies: copies, totalTitles: titles }) => {
+              const share = totalCopies > 0 ? Math.round((copies / totalCopies) * 100) : 0;
+              return (
+                <div key={category} className="legend-item">
+                  <span
+                    className="legend-color-dot"
+                    style={{ backgroundColor: categoryBarColors[category] }}
+                  />
+                  <span className="legend-name">{category}</span>
+                  <span className="legend-count">
+                    {copies} bản <span className="legend-share">({share}%)</span>
+                  </span>
+                  <span className="legend-titles-tag">{titles} đầu sách</span>
+                </div>
+              );
+            })}
           </div>
         </section>
 
@@ -155,47 +180,49 @@ const StatsPage: React.FC = () => {
           </div>
 
           <div className="category-grid">
-            {statsByCategory.map(({ category, totalTitles, totalCopies: copies, availableCopies }) => {
-              const availabilityPercent =
-                copies > 0 ? Math.round((availableCopies / copies) * 100) : 0;
+            {statsByCategory.map(
+              ({ category, totalTitles: catTitles, totalCopies: copies, availableCopies }) => {
+                const availabilityPercent =
+                  copies > 0 ? Math.round((availableCopies / copies) * 100) : 0;
 
-              return (
-                <article className="category-card" key={category}>
-                  <div className="category-card__header">
-                    <span className="category-card__tag">
-                      <span className="category-card__icon">{categoryIcons[category]}</span>
-                      <span className="category-card__name">{category}</span>
-                    </span>
-                    <span className="category-card__rate">{availabilityPercent}% khả dụng</span>
-                  </div>
+                return (
+                  <article className="category-card" key={category}>
+                    <div className="category-card__header">
+                      <span className="category-card__tag">
+                        <span className="category-card__icon">{categoryIcons[category]}</span>
+                        <span className="category-card__name">{category}</span>
+                      </span>
+                      <span className="category-card__rate">{availabilityPercent}% khả dụng</span>
+                    </div>
 
-                  <dl className="category-card__data">
-                    <div className="data-row">
-                      <dt>Số đầu sách:</dt>
-                      <dd>{totalTitles} tác phẩm</dd>
-                    </div>
-                    <div className="data-row">
-                      <dt>Tổng số bản:</dt>
-                      <dd>{copies} bản</dd>
-                    </div>
-                    <div className="data-row">
-                      <dt>Còn trên kệ:</dt>
-                      <dd className="highlight-text">{availableCopies} bản</dd>
-                    </div>
-                  </dl>
+                    <dl className="category-card__data">
+                      <div className="data-row">
+                        <dt>Số đầu sách:</dt>
+                        <dd>{catTitles} tác phẩm</dd>
+                      </div>
+                      <div className="data-row">
+                        <dt>Tổng số bản:</dt>
+                        <dd>{copies} bản</dd>
+                      </div>
+                      <div className="data-row">
+                        <dt>Còn trên kệ:</dt>
+                        <dd className="highlight-text">{availableCopies} bản</dd>
+                      </div>
+                    </dl>
 
-                  <div className="progress-container" aria-hidden="true">
-                    <div
-                      className="progress-bar"
-                      style={{
-                        width: `${availabilityPercent}%`,
-                        backgroundColor: categoryBarColors[category],
-                      }}
-                    />
-                  </div>
-                </article>
-              );
-            })}
+                    <div className="progress-container" aria-hidden="true">
+                      <div
+                        className="progress-bar"
+                        style={{
+                          width: `${availabilityPercent}%`,
+                          backgroundColor: categoryBarColors[category],
+                        }}
+                      />
+                    </div>
+                  </article>
+                );
+              }
+            )}
           </div>
         </section>
       </div>
