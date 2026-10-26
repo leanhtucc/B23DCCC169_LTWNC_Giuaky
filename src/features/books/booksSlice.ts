@@ -4,7 +4,7 @@ import { fetchBooks } from '../../api/booksApi';
 import { isApiSuccess } from '../../types';
 import type { BooksState, Book } from '../../types';
 
-// ===== Async Thunk: Xử lý 3 trạng thái pending / fulfilled / rejected =====
+
 export const loadBooks = createAsyncThunk<Book[], boolean | undefined, { rejectValue: string }>(
   'books/load',
   async (shouldFail = false, { rejectWithValue }) => {
@@ -16,14 +16,12 @@ export const loadBooks = createAsyncThunk<Book[], boolean | undefined, { rejectV
   }
 );
 
-// ===== Initial State =====
 const initialState: BooksState = {
   items: [],
   status: 'idle',
   error: null,
 };
 
-// ===== Slice =====
 const booksSlice = createSlice({
   name: 'books',
   initialState,

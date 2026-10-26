@@ -22,7 +22,6 @@ const HomePage: React.FC = () => {
 
   return (
     <main className="home-page">
-      {/* Streamlined Academic Header */}
       <header className="page-header">
         <div className="page-header__main">
           <div className="page-header__content">
@@ -65,8 +64,6 @@ const HomePage: React.FC = () => {
           </div>
         </div>
       </header>
-
-      {/* Main Bento Workspace Body */}
       <div className="page-body">
         {status === 'loading' && <LoadingSpinner />}
 
@@ -96,15 +93,10 @@ const HomePage: React.FC = () => {
 
         {status === 'succeeded' && (
           <div className="bento-workspace">
-            {/* Left: Sticky Personal Student Desk & Filters */}
             <StudentDesk />
 
-            {/* Right: Main Shelf & Bento Spotlight */}
             <div className="bento-main">
-              {/* Featured Book Spotlight */}
               <SpotlightBook />
-
-              {/* Book Catalog Section */}
               <section className="catalog-section" aria-labelledby="catalog-heading">
                 <div className="section-header">
                   <div className="section-title-wrap">

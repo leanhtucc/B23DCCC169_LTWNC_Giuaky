@@ -70,7 +70,6 @@ const StudentDesk: React.FC = () => {
 
   return (
     <aside className="student-desk" aria-label="Bàn đọc cá nhân và bộ lọc">
-      {/* 1. Student Personal Borrow Desk Section */}
       <div className="desk-card desk-card--borrow">
         <div className="desk-card__header">
           <div className="desk-title-wrap">
@@ -95,8 +94,6 @@ const StudentDesk: React.FC = () => {
             {borrowedBooks.length}/{BORROW_MAX}
           </span>
         </div>
-
-        {/* 3 Quota Slots */}
         <div className="desk-slots" aria-label="Các khe sách mượn">
           {[0, 1, 2].map((idx) => {
             const isFilled = idx < borrowedBooks.length;
@@ -119,7 +116,6 @@ const StudentDesk: React.FC = () => {
           })}
         </div>
 
-        {/* Limit Warning Alert */}
         {limitWarning && (
           <div className="alert alert--warning alert--dismissible desk-alert" role="alert">
             <span className="alert__icon">
@@ -138,8 +134,6 @@ const StudentDesk: React.FC = () => {
             </button>
           </div>
         )}
-
-        {/* List of currently borrowed books */}
         {borrowedBooks.length > 0 ? (
           <div className="desk-borrowed-list">
             <span className="desk-list-heading">Sách đang lưu giữ:</span>
@@ -171,20 +165,16 @@ const StudentDesk: React.FC = () => {
           </div>
         )}
       </div>
-
-      {/* 2. Search & Categorization Hub */}
       <div className="desk-card desk-card--filters">
         <div className="desk-card__header">
           <h3 className="desk-filter-title">Bộ lọc & Tra cứu</h3>
           <span className="desk-total-tag">{allBooks.length} cuốn</span>
         </div>
 
-        {/* Search Input */}
         <div className="desk-search-wrap">
           <SearchBar />
         </div>
 
-        {/* Category List */}
         <div className="desk-categories" role="group" aria-label="Lọc theo thể loại chuyên ngành">
           <span className="desk-cat-heading">Chuyên ngành:</span>
           <div className="desk-cat-list">

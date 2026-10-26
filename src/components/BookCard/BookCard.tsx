@@ -34,7 +34,6 @@ const BookCard: React.FC<BookCardProps> = ({ book, isBorrowed, onBorrow, onRetur
 
   return (
     <article className={`book-card ${isBorrowed ? 'book-card--borrowed' : ''}`}>
-      {/* Decorative tactile spine that gives physical book feeling */}
       <div className={`book-card__spine ${styleConfig.spine}`} aria-hidden="true" />
 
       <div className="book-card__inner">

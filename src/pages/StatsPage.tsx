@@ -74,7 +74,6 @@ const StatsPage: React.FC = () => {
       </header>
 
       <div className="page-body">
-        {/* KPI Overview Metrics */}
         <section className="metrics-grid" aria-label="Chỉ số tổng quan">
           <div className="metric-card metric-card--titles">
             <div className="metric-card__header">
@@ -121,7 +120,6 @@ const StatsPage: React.FC = () => {
           </div>
         </section>
 
-        {/* Global Collection Distribution Bar */}
         <section className="collection-distribution-card" aria-label="Tỷ lệ phân bổ tài liệu">
           <div className="distribution-header">
             <div>

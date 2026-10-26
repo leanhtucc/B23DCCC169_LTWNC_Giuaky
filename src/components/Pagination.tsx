@@ -20,7 +20,6 @@ const Pagination: React.FC<PaginationProps> = ({
   onPageChange,
   onPageSizeChange,
 }) => {
-  // Generate page numbers with ellipsis
   const pageNumbers = useMemo<(number | string)[]>(() => {
     if (totalPages <= 7) {
       return Array.from({ length: totalPages }, (_, i) => i + 1);
@@ -56,12 +55,11 @@ const Pagination: React.FC<PaginationProps> = ({
 
   return (
     <nav className="pagination-wrapper" aria-label="Điều hướng phân trang sách">
-      {/* Left: Range and total count */}
+      
       <div className="pagination__summary">
         Hiển thị <strong>{startItem} – {endItem}</strong> trong <strong>{totalItems}</strong> cuốn sách
       </div>
 
-      {/* Center: Slide Pager (lucian-ref 043-pagination-slide pattern) */}
       <div className="pagination__controls" role="group" aria-label="Chuyển trang">
         <button
           type="button"
@@ -116,7 +114,6 @@ const Pagination: React.FC<PaginationProps> = ({
         </button>
       </div>
 
-      {/* Right: Page Size Selector */}
       {onPageSizeChange && (
         <div className="pagination__size-selector">
           <span className="size-label">Mỗi trang:</span>

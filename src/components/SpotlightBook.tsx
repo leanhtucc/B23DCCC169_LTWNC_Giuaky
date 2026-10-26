@@ -11,7 +11,6 @@ const SpotlightBook: React.FC = () => {
   const allBooks: Book[] = useAppSelector((s) => s.books.items);
   const borrowedIds: string[] = useAppSelector((s) => s.borrow.borrowedIds);
 
-  // Chọn cuốn sách tiêu biểu (ưu tiên id '2' - React & Redux Toolkit thực chiến)
   const spotlightBook = allBooks.find((b) => b.id === '2') || allBooks[0];
 
   const isBorrowed = spotlightBook ? borrowedIds.includes(spotlightBook.id) : false;

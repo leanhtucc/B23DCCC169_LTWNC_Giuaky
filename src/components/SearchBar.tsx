@@ -9,12 +9,10 @@ const SearchBar: React.FC = () => {
   const setKeyword = useFilterStore((s) => s.setKeyword);
   const debouncedValue = useDebounce<string>(inputValue, 300);
 
-  // Sync debounced value vào Zustand store
   useEffect(() => {
     setKeyword(debouncedValue);
   }, [debouncedValue, setKeyword]);
 
-  // Phím tắt bàn phím '/' để nhảy nhanh vào ô tìm kiếm
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (

@@ -12,7 +12,6 @@ const Navbar: React.FC = () => {
   return (
     <header className="navbar-container">
       <nav className="navbar" aria-label="Điều hướng chính">
-        {/* Brand with Academic Crest */}
         <Link to="/" className="navbar__brand">
           <div className="navbar__brand-badge">
             <BookIcon size={18} />
@@ -25,8 +24,6 @@ const Navbar: React.FC = () => {
             </div>
           </div>
         </Link>
-
-        {/* Center: Sliding Capsule Pill Navigation (lucian-ref 039 / 047 pattern) */}
         <div className="navbar__pill-container" role="tablist" aria-label="Menu chuyển trang">
           <Link
             to="/"
@@ -47,8 +44,6 @@ const Navbar: React.FC = () => {
             <span>Thống kê</span>
           </Link>
         </div>
-
-        {/* Right Actions: Borrow Badge & Day-Night Sky Switch (lucian-ref 021 pattern) */}
         <div className="navbar__actions">
           {borrowedCount > 0 && (
             <Link
@@ -57,11 +52,15 @@ const Navbar: React.FC = () => {
               title="Xem danh sách các cuốn sách đang mượn"
             >
               <BorrowIcon size={14} />
-              <span>Đang mượn <strong>{borrowedCount}/3</strong></span>
+              <span className="nav-loan-chip__full">
+                Đang mượn <strong>{borrowedCount}/3</strong>
+              </span>
+              <span className="nav-loan-chip__compact">
+                <strong>{borrowedCount}/3</strong>
+              </span>
             </Link>
           )}
 
-          {/* Interactive Sun-Moon Switcher */}
           <button
             type="button"
             className={`theme-pill-switch ${theme === 'dark' ? 'is-dark' : 'is-light'}`}
